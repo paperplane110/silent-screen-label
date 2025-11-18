@@ -1,0 +1,36 @@
+[project]
+name = "silent-screen-analysis"
+version = "0.1.0"
+description = "Silent Screen Analysis tools"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mss>=10.1.0",
+    "opencv-python>=4.10.0.84",
+    "pytesseract>=0.3.10",
+    "numpy>=2.1.0",
+    "tqdm>=4.66.0",
+    "rumps>=0.4.0",
+    "open-clip-torch>=2.24.0",
+    "torch>=2.3.0",
+    "pillow>=10.0.0",
+    "rich>=14.2.0",
+    "streamlit>=1.51.0",
+    "plotly>=6.4.0",
+    "pandas>=2.3.3",
+]
+
+[project.scripts]
+sa = "screen_analysis.main:main"
+sa-eval = "screen_analysis.tools.model_eval:main"
+sa-train = "screen_analysis.tools.linear_probe:main"
+sa-monitor = "screen_analysis.tools.monitor_performance:main"
+sa-studio = "screen_analysis.commands.studio.cli:main"
+
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["screen_analysis*"]

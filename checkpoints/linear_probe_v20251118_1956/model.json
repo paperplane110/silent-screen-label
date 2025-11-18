@@ -1,0 +1,35 @@
+{
+  "timestamp": "20251118-195658",
+  "out_path": "checkpoints/linear_probe_v171956.pth",
+  "clip_weights": "/Users/tyyuan/Desktop/code/screen_analysis/checkpoints/laion/CLIP-ViT-B-32-laion2B-s34B-b79K/open_clip_pytorch_model.bin",
+  "data_root": "dataset/training",
+  "batch_size": 32,
+  "epochs": 20,
+  "lr": 0.0005,
+  "weight_decay": 0.0001,
+  "val_split": 0.2,
+  "labels": [
+    "chat",
+    "game",
+    "idle",
+    "music",
+    "programming",
+    "search",
+    "sheet",
+    "unknown",
+    "video"
+  ],
+  "label_counts": {
+    "chat": 21,
+    "game": 25,
+    "idle": 9,
+    "music": 41,
+    "programming": 27,
+    "search": 13,
+    "sheet": 38,
+    "unknown": 2,
+    "video": 75
+  },
+  "feature_dim": 512,
+  "best_val_acc": 0.9444444444444444
+}

@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# MacOS
+.DS_Store
+
+# local files
+screenshots/**/*.png
+dataset/**/*.png
+reports/2025*
+test/
+checkpoints/laion/CLIP-ViT-B-32-laion2B-s34B-b79K/open_clip_pytorch_model.bin
