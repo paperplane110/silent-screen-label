@@ -50,5 +50,7 @@
       "a screenshot of wallpaper or desktop",
       "a screenshot of wallpaper has app dock in MacOS style"
     ]
-  }
+  },
+  "linear_probe": "./checkpoints/linear_probe_v20251118_1956/model.pth",
+  "use_linear_probe": false
 }

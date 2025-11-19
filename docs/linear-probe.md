@@ -99,11 +99,11 @@ sa-train \
 ```bash
 cd {project_root}
 
-sa-eval
+sa-eval lp
 
 # or
 
-sa-eval \
+sa-eval lp \
   --data-root dataset/eval \
   --batch-size 32 \
   --probe checkpoints/linear_probe_balanced/model.pth \

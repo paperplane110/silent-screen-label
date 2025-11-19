@@ -215,9 +215,10 @@ def analyze_cmd(args):
         if "linear_probe" in cfg 
         else None
     )
+    use_linear_probe = cfg["use_linear_probe"]
 
     # Decide how to classify
-    if probe_path:
+    if use_linear_probe and probe_path:
         inference = partial(
             classify_with_probe,
             probe_path=probe_path,

@@ -138,6 +138,6 @@ If results are suboptimal, try:
 1. Adjust categories
    - Review `clip_prompts` descriptions in `config.json`
    - Add/remove/edit prompts to better match your activities
-2. Train a custom model (linear probe)
+2. Skip prompts, train and use a custom model (linear probe)
    - With ~100 labeled screenshots you can significantly improve results
    - See [Docs – Train Linear Probe](docs/linear-probe.md)

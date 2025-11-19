@@ -110,8 +110,8 @@ sa-studio
 
 - 在命令行中执行 `sa analyze [YYYYMMDD]` 或 `python -m screen_analysis.main analyze [YYYYMMDD]`
 - 参数：
+  - [YYYYMMDD] 如 20251119，可不填写，不填写时默认是今天
   - `--debug` 输出逐图分类信息
-  - `--clip-weights <path>` 指定 CLIP 权重
   - `--overwrite` 强制全量分析（忽略增量）
 
 增量分析说明：
@@ -140,6 +140,7 @@ sa del -d 20251118
 1. 调整分类标签
    - 检查 `config.json` 中的 `clip_prompts` 是否准确描述了屏幕活动。
    - 可以添加、删除或修改标签，根据实际情况调整。
-2. 训练自定义模型，我们提供了一个简单的训练脚本，来训练线性探针模型。只需要极少的训练数据（100 张截图） 就可以显著提升分类效果。
-   - 请参考这个文档 [优化-训练自定义模型](docs/linear-probe.md) 脚本训练模型。
+2. 越过 prompt 使用线性探针，
+   - 我们提供了一个简单的训练脚本，来训练线性探针模型。只需要极少的训练数据（100 张截图） 就可以显著提升分类效果。
+   - 请参考这个文档 [优化-训练线性探针模型](docs/linear-probe.md) 
 
