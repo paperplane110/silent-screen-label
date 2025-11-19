@@ -204,7 +204,7 @@ def train(
     console.print("[bold]History: " + str(hist_path))
 
 
-def load_probe(p: Path) -> Tuple[nn.Linear, List[str]]:
+def load_probe(p: str) -> Tuple[nn.Linear, List[str]]:
     data = torch.load(p, map_location="cpu")
     fdim = int(data["feature_dim"]) if "feature_dim" in data else None
     labels = data["labels"]

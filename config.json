@@ -4,104 +4,51 @@
   "test_dataset": "dataset/eval",
   "batch_size": 32,
   "clip_weights": "./checkpoints/laion/CLIP-ViT-B-32-laion2B-s34B-b79K/open_clip_pytorch_model.bin",
-  "clip_agg": "mean",
-  "linear_probe": "./checkpoints/linear_probe_v20251118_1956/model.pth",
-  "clip_prompts": [
-    {
-      "prompt": "a screenshot of an IDE or code editor or terminal",
-      "label": "programming"
-    },
-    {
-      "prompt": "a screenshot of iterm2 with pure black background",
-      "label": "programming"
-    },
-    {
-      "prompt": "a screenshot of a video player with playback controls (play/pause), a progress bar and timestamp, volume and fullscreen icons, on youtube or bilibili",
-      "label": "video"
-    },
-    {
-      "prompt": "a screenshot of a YouTube video page with the player",
-      "label": "video"
-    },
-    {
-      "prompt": "a screenshot of a bilibili video page with the player",
-      "label": "video"
-    },
-    {
-      "prompt": "a screenshot of a web video player interface with play and timeline",
-      "label": "video"
-    },
-    {
-      "prompt": "a screenshot of Obsidian or Notion",
-      "label": "writing"
-    },
-    {
-      "prompt": "a screenshot of a web browser showing search results, a technical documentation page or article, or a Wikipedia page",
-      "label": "search"
-    },
-    {
-      "prompt": "a screenshot of a google sheet or excel or data table",
-      "label": "sheet"
-    },
-    {
-      "prompt": "a screenshot of a spreadsheet showing rows and columns with headers (A,B,C ... / 1,2,3 ...), and a formula bar",
-      "label": "sheet"
-    },
-    {
-      "prompt": "a screenshot of Google Sheets with gridlines and a tab named 'Sheet1' at the bottom",
-      "label": "sheet"
-    },
-    {
-      "prompt": "a screenshot of a gantt chart",
-      "label": "sheet"
-    },
-    {
-      "prompt": "a screenshot of a Microsoft Excel spreadsheet with a ribbon toolbar and cells",
-      "label": "sheet"
-    },
-    {
-      "prompt": "a screenshot of a fullscreen game",
-      "label": "game"
-    },
-    {
-      "prompt": "a screenshot of Steam game store with grid layout of game cover cards",
-      "label": "game"
-    },
-    {
-      "prompt": "a screenshot of Steam game store with menubar has 'Store', 'Library', 'Community'",
-      "label": "game"
-    },
-    {
-      "prompt": "a screenshot of Steam game store with a menubar has '商店', '库', '社区' 等文字",
-      "label": "game"
-    },
-    {
-      "prompt": "a screenshot of a music player or spotify",
-      "label": "music"
-    },
-    {
-      "prompt": "a screenshot of '网易云音乐' icon at it's top left corner",
-      "label": "music"
-    },
-    {
-      "prompt": "a screenshot of app has red play button or red pause button",
-      "label": "music"
-    },
-    {
-      "prompt": "a screenshot of a chat application or wechat",
-      "label": "chat"
-    },
-    {
-      "prompt": "a screenshot of wallpaper or desktop",
-      "label": "idle"
-    },
-    {
-      "prompt": "a screenshot of wallpaper has app dock in MacOS style",
-      "label": "idle"
-    },
-    {
-      "prompt": "a screenshot of something else",
-      "label": "unknown"
-    }
-  ]
+  "clip_agg": "max",
+  "threshold": 0.3,
+  "label2prompts": {
+    "programming": [
+      "a screenshot of an IDE or code editor or terminal",
+      "a screenshot of iterm2 with pure black background"
+    ],
+    "video": [
+      "a screenshot of a video player with playback controls, a progress bar and timestamp, volume and fullscreen icons, on youtube or bilibili",
+      "a screenshot of Bilibili (B站) or an online video platform homepage showing many video thumbnails and category tabs",
+      "a screenshot of a video player with playback controls, a progress bar, and a visible comments or bullet-screen (danmu) section",
+      "a screenshot of an online video platform in a web browser, showing a video thumbnail or player, and containing text elements like 'subscribe', 'comments', 'danmu (bullet screen)'.",
+      "a screenshot of a video content page where the main focus is a large player window or video content."
+    ],
+    "writing": [
+      "a screenshot of a note-taking app like Obsidian or Notion"
+    ],
+    "search": [
+      "a screenshot of a web browser showing search results, a technical documentation page or article, or a Wikipedia page"
+    ],
+    "sheet": [
+      "a screenshot of a spreadsheet or data table with rows and columns",
+      "a screenshot of Google Sheets or Microsoft Excel interface",
+      "a screenshot of a business chart visualizing data, such as an analytical graph, bar chart, or detailed gantt diagram",
+      "a screenshot of a project timeline or task schedule displayed as horizontal bars",
+      "a screenshot of a dashboard or report containing data plots and axes"
+    ],
+    "game": [
+      "a screenshot of a digital game store or library showing game covers, prices, 'Add to Cart' or 'Buy Now' buttons, and user reviews for PC/console games.",
+      "a screenshot of a fullscreen game interface showing complex Heads-Up Display (HUD), character stats, or in-game menus",
+      "a screenshot of the Steam application interface, NOT in a web browser, but in the desktop client showing the Library or Store."
+    ],
+    "music": [
+      "a screenshot of a music player displaying album art, song titles, artist names, or a playlist",
+      "a screenshot of a music streaming application like 网易云音乐, Spotify, or Apple Music, with a distinctive dark or colored theme",
+      "a screenshot of media playback controls, like play, pause, next/previous track buttons, and a song progress bar, along with album art, artist/song titles, and volume control"
+    ],
+    "chat": [
+      "a screenshot of a chat application showing a message history with speech bubbles or message boxes",
+      "a screenshot of Wechat or Discord application",
+      "a screenshot of a vertical list of contacts or conversations on the left side of an application"
+    ],
+    "idle": [
+      "a screenshot of wallpaper or desktop",
+      "a screenshot of wallpaper has app dock in MacOS style"
+    ]
+  }
 }

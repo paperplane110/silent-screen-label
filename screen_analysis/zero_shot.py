@@ -4,21 +4,28 @@ import torch
 import torch.nn as nn
 import open_clip
 from PIL import Image
+from rich.progress import (
+    Progress,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
-_MODEL_CACHE: Dict[str, Any] = {}
+_MODEL_CACHE: Dict[Tuple[str, str, str, str], Any] = {}
 
 
 def load_model(
     model_name: str = "ViT-B-32",
     pretrained: str = "laion2b_s34b_b79k",
-    device: str = None,
-    checkpoint_path: Optional[Path] = None,
+    device: str | None = None,
+    checkpoint_path: Optional[str] = None,
 ):
     device = device or ("mps" if torch.backends.mps.is_available() else "cpu")
     key = (
         model_name,
         str(pretrained) if pretrained else "",
-        str(checkpoint_path) if checkpoint_path else "",
+        checkpoint_path if checkpoint_path else "",
         device,
     )
     if key in _MODEL_CACHE:
@@ -61,7 +68,7 @@ def clip_classify(
     prompts: List[str],
     model_name: str = "ViT-B-32",
     pretrained: str = "laion2b_s34b_b79k",
-    checkpoint_path: Optional[Path] = None,
+    checkpoint_path: Optional[str] = None,
     batch_size: Optional[int] = None,
 ) -> List[Tuple[str, float]]:
     model, preprocess, tokenizer, device = load_model(
@@ -101,7 +108,7 @@ def clip_classify_labels(
     prompt_items: List[Dict[str, str]],
     model_name: str = "ViT-B-32",
     pretrained: str = "laion2b_s34b_b79k",
-    checkpoint_path: Optional[Path] = None,
+    checkpoint_path: Optional[str] = None,
     batch_size: Optional[int] = None,
     agg: str = "mean",
     threshold: Optional[float] = None,
@@ -128,35 +135,45 @@ def clip_classify_labels(
     with torch.no_grad():
         if not batch_size or batch_size <= 0:
             batch_size = len(paths)
-        for start in range(0, len(paths), batch_size):
-            batch_paths = paths[start : start + batch_size]
-            images = []
-            for p in batch_paths:
-                img = Image.open(p).convert("RGB")
-                images.append(preprocess(img))
-            image_input = torch.stack(images).to(device)
-            image_features = model.encode_image(image_input)
-            image_features /= image_features.norm(dim=-1, keepdim=True)
-            logits = (100.0 * image_features @ text_features.T).softmax(dim=-1)
-            for i in range(logits.shape[0]):
-                lp = []
-                for l in label_set:
-                    idxs = label_to_indices[l]
-                    probs = logits[i, idxs]
-                    if agg == "max":
-                        v = torch.max(probs).item()
-                    elif agg == "sum":
-                        v = torch.sum(probs).item()
+
+        with Progress(
+            TextColumn("[bold magenta]{task.description}"),
+            BarColumn(bar_width=None),
+            TextColumn("[bold]{task.completed}/{task.total}"),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
+            task = progress.add_task("[bold magenta]CLIP Classifying...", total=len(paths))
+            for start in range(0, len(paths), batch_size):
+                batch_paths = paths[start : start + batch_size]
+                images = []
+                for p in batch_paths:
+                    img = Image.open(p).convert("RGB")
+                    images.append(preprocess(img))
+                image_input = torch.stack(images).to(device)
+                image_features = model.encode_image(image_input)
+                image_features /= image_features.norm(dim=-1, keepdim=True)
+                logits = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+                for i in range(logits.shape[0]):
+                    lp = []
+                    for l in label_set:
+                        idxs = label_to_indices[l]
+                        probs = logits[i, idxs]
+                        if agg == "max":
+                            v = torch.max(probs).item()
+                        elif agg == "sum":
+                            v = torch.sum(probs).item()
+                        else:
+                            v = torch.mean(probs).item()
+                        lp.append(v)
+                    li = int(torch.tensor(lp).argmax().item())
+                    pred_label = label_set[li]
+                    pred_conf = lp[li]
+                    if threshold is not None and pred_conf < threshold:
+                        results.append(("unknown", pred_conf))
                     else:
-                        v = torch.mean(probs).item()
-                    lp.append(v)
-                li = int(torch.tensor(lp).argmax().item())
-                pred_label = label_set[li]
-                pred_conf = lp[li]
-                if threshold is not None and pred_conf < threshold:
-                    results.append(("unknown", pred_conf))
-                else:
-                    results.append((pred_label, pred_conf))
+                        results.append((pred_label, pred_conf))
+                    progress.update(task, advance=1)
     return results
 
 
@@ -165,7 +182,7 @@ def classify_with_probe(
     probe_path: Path,
     model_name: str = "ViT-B-32",
     pretrained: str = "laion2b_s34b_b79k",
-    checkpoint_path: Optional[Path] = None,
+    checkpoint_path: Optional[str] = None,
     batch_size: Optional[int] = None,
 ) -> List[Tuple[str, float]]:
     model, preprocess, _, device = load_model(

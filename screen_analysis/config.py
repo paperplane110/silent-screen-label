@@ -8,13 +8,16 @@ def load_config(base: Path) -> dict:
     p = config_path(base)
     defaults = {"cycle": 600, "dir": str(base)}
     if p.exists():
-        try:
-            with p.open("r", encoding="utf-8") as f:
-                data = json.load(f)
-            if "cycle" not in data or "dir" not in data:
-                data = {**defaults, **data}
-        except Exception:
-            data = defaults
+        with p.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        if "cycle" not in data or "dir" not in data:
+            data = {**defaults, **data}
+        if "label2prompts" in data:
+            cps = []
+            for lbl, arr in data.get("label2prompts", {}).items():
+                for prm in arr or []:
+                    cps.append({"prompt": prm, "label": lbl})
+            data["clip_prompts"] = cps
     else:
         data = defaults
         with p.open("w", encoding="utf-8") as f:
