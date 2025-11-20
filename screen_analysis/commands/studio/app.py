@@ -29,12 +29,29 @@ def list_available_dates(parent_folder: Path) -> list[str]:
     return sorted([p.name for p in parent_folder.iterdir() if p.is_dir()])
 
 
+def analyze_date(date_str: str):
+    with st.spinner("正在分析..."):
+        try:
+            r = subprocess.run(["sa", "analyze", selected_date], capture_output=True, text=True)
+        except FileNotFoundError:
+            r = subprocess.run([sys.executable, "-m", "screen_analysis.main", "analyze", selected_date], capture_output=True, text=True)
+    # st.write("退出码:", r.returncode)
+    # if r.stdout:
+    #     st.code(r.stdout)
+    if r.stderr:
+        st.code(r.stderr)
+        st.stop()
+
+
 def load_timeline(date_str: str) -> pd.DataFrame:
     date_dir = REPORTS_DIR / date_str
+    screenshots_dir = SCREENSHOTS_DIR / date_str
     csv_path = date_dir / f"{date_str}_timeline.csv"
     if not csv_path.exists():
-        st.warning(f"未找到时间线文件: {csv_path}, 请点击“分析”生成报告")
-        return pd.DataFrame(columns=["start", "category", "duration_seconds", "finish"])  
+        if not screenshots_dir.exists():
+            st.warning(f"未找到 {date_str} 的截图目录")
+        else:
+            analyze_date(date_str)
     df = pd.read_csv(csv_path)
     if "start" not in df.columns or "category" not in df.columns or "duration_seconds" not in df.columns:
         return pd.DataFrame(columns=["start", "category", "duration_seconds", "finish"])  
@@ -82,16 +99,7 @@ selected_date = st.sidebar.selectbox("选择数据日期", options=dates, index=
 left, right = st.columns(2, width=450)
 
 if left.button("分析屏幕截图", type="secondary", icon="🔄"):
-    with st.spinner("正在分析..."):
-        try:
-            r = subprocess.run(["sa", "analyze", selected_date], capture_output=True, text=True)
-        except FileNotFoundError:
-            r = subprocess.run([sys.executable, "-m", "screen_analysis.main", "analyze", selected_date], capture_output=True, text=True)
-    # st.write("退出码:", r.returncode)
-    # if r.stdout:
-    #     st.code(r.stdout)
-    if r.stderr:
-        st.code(r.stderr)
+    analyze_date(selected_date)
 
 df = load_timeline(selected_date)
 if df.empty:
