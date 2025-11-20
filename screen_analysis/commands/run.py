@@ -1,7 +1,12 @@
-from pathlib import Path
 import time
 import mss
+from pathlib import Path
+
+from rich.console import Console
+
 from screen_analysis.config import load_config, save_config, resolve_output_base
+
+console = Console()
 
 def capture_once(out_base: Path) -> Path:
     day = time.strftime("%Y%m%d")
@@ -13,7 +18,8 @@ def capture_once(out_base: Path) -> Path:
             shot = sct.grab(mon)
             name = f"{ts}_{idx}.png"
             mss.tools.to_png(shot.rgb, shot.size, output=str(target / name))
-    return target
+            console.print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Snapshot {target / name}")
+    return target / name
 
 def run_cmd(args):
     base = Path.cwd()
@@ -30,6 +36,5 @@ def run_cmd(args):
         run_menubar(out_base, cycle, capture_once)
     else:
         while True:
-            out_dir = capture_once(out_base)
-            print(f"Captured screenshots to {out_dir}")
+            img_path = capture_once(out_base)
             time.sleep(cycle)

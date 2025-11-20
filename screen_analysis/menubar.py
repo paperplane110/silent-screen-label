@@ -17,8 +17,7 @@ class RecorderApp(rumps.App):
 
     def _do_capture(self):
         try:
-            out_dir = self.capture_once(self.out_base)
-            print(f"Captured screenshots to {out_dir}")
+            img_path = self.capture_once(self.out_base)
         finally:
             self.title = "Rec"
 
